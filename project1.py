@@ -4,10 +4,24 @@ import random
 import numpy as np
 from matplotlib import pyplot as plt
 
+colors=["#000000", "#FFFF00", "#1CE6FF", "#FF34FF", "#FF4A46", "#008941", "#006FA6", "#A30059",
+"#FFDBE5", "#7A4900", "#0000A6", "#63FFAC", "#B79762", "#004D43", "#8FB0FF", "#997D87",
+"#5A0007", "#809693", "#FEFFE6", "#1B4400", "#4FC601", "#3B5DFF", "#4A3B53", "#FF2F80",
+"#61615A", "#BA0900", "#6B7900", "#00C2A0", "#FFAA92", "#FF90C9", "#B903AA", "#D16100",
+"#DDEFFF", "#000035", "#7B4F4B", "#A1C299", "#300018", "#0AA6D8", "#013349", "#00846F",
+"#372101", "#FFB500", "#C2FFED", "#A079BF", "#CC0744", "#C0B9B2", "#C2FF99", "#001E09",
+"#00489C", "#6F0062", "#0CBD66", "#EEC3FF", "#456D75", "#B77B68", "#7A87A1", "#788D66",
+"#885578", "#FAD09F", "#FF8A9A", "#D157A0", "#BEC459", "#456648", "#0086ED", "#886F4C",
+"#34362D", "#B4A8BD", "#00A6AA", "#452C2C", "#636375", "#A3C8C9", "#FF913F", "#938A81",
+"#575329", "#00FECF", "#B05B6F", "#8CD0FF", "#3B9700", "#04F757", "#C8A1A1", "#1E6E00",
+"#7900D7", "#A77500", "#6367A9", "#A05837", "#6B002C", "#772600", "#D790FF", "#9B9700",
+"#549E79", "#FFF69F", "#201625", "#72418F", "#BC23FF", "#99ADC0", "#3A2465", "#922329",
+"#5B4534", "#FDE8DC", "#404E55", "#0089A3", "#CB7E98", "#A4E804", "#324E72", "#6A3A4C"]
+
 #Design task
 class MyKmeans:
 	data=[]
-	cluster=[]
+	clusters=[]
 	clusterIndex=[]
 	points=[]
 	k=0
@@ -58,7 +72,7 @@ class MyKmeans:
 			for match in matches:
 				result[i].append(self.data[0].values[match])
 		#print result
-		self.cluster = result
+		self.clusters = result
 		return result
 
 	def avgDistance(self,id,clusterId, clusters):
@@ -81,8 +95,27 @@ class MyKmeans:
 		sc = sc/len(self.data)
 		print sc
 
+	#plots raw data before processing
+	def plotData(self):
+		labels = np.array(self.data[1])
+		for i in range(10):
+			locations = np.where(labels == i)
+			x = [self.data[2].values[j] for j in locations]
+			y = [self.data[3].values[k] for k in locations]	
+			plt.plot(x[0],y[0],'+',label="digit %d"%(i))
+		plt.legend()	
+		plt.show()
+
+
 	def plotCluster(self):
-		plt.scatter(self.data[2],self.data[3], c=0.5, s=7)
+		for i in range(self.k):
+			clusterArray = self.clusters[i]
+			clusterPoints = [np.array(self.points[j]) for j in clusterArray]
+			x = [clusterPoints[0][k][0] for k in range(len(clusterPoints[0]))]#list comprehension
+			y = [clusterPoints[0][k][1] for k in range(len(clusterPoints[0]))]#list comprehension
+			#plt.scatter(x,y, c=colors[i], s=7)
+			plt.plot(x,y,'+',label="digit %d"%(i))
+		plt.legend()	
 		plt.show()
 
 
@@ -96,8 +129,27 @@ class MyKmeans:
 #print km.data
 #km.calculateSC(km.cluster(1,10))
 
-#tasks
-km = MyKmeans()
-km.readData('digits-embedding.csv')
-km.cluster(1,10)
-km.plotCluster()
+# km = MyKmeans()
+# km.readData('digits-embedding.csv')
+# km.cluster(1,10)
+# km.plotCluster()
+
+
+#Clustering Tasks
+kValues=[2,4,8,16,32]
+
+def expriment(kMeans):
+	averages={}
+	for i in kValues:
+		averages[i]=[]
+		print i
+		for j in range(10):
+			print "trial %d" % (j)
+			averages[i].append(kMeans.calculateSC(kMeans.cluster(i,50)))
+		averages[i] = np.mean(averages[i])
+		print averages[i]
+
+#Use full dataset
+one = MyKmeans()
+one.readData('digits-embedding.csv')
+expriment(one)
