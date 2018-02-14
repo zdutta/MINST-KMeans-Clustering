@@ -114,7 +114,8 @@ class MyKmeans:
 			y = [self.data[3].values[k] for k in locations]	
 			plt.plot(x[0],y[0],'+',label="digit %d"%(i))
 		plt.legend()	
-		plt.show()
+		plt.show(block=False)
+		return
 
 
 	def plotCluster(self):
@@ -126,24 +127,8 @@ class MyKmeans:
 			#plt.scatter(x,y, c=colors[i], s=7)
 			plt.plot(x,y,'+',label="digit %d"%(i))
 		plt.legend()	
-		plt.show()
-
-
-
-
-
-
-
-
-#km = MyKmeans()
-#print km.data
-#km.calculateSC(km.cluster(1,10))
-
-# km = MyKmeans()
-# km.readData('digits-embedding.csv')
-# km.cluster(1,10)
-# km.plotCluster()
-
+		plt.show(block=False)
+		return
 
 #Clustering Tasks
 kValues=[2,4,8,16,32]
@@ -151,28 +136,32 @@ kValues=[2,4,8,16,32]
 def expriment(kMeans):
 	averages={}
 	for i in kValues:
-		averages[i]=0
-		#print i
+		averages[i]=[]
+		print "K Size %d" % (i)
 		for j in range(10):
-			#print "trial %d" 
+			print "trial %d" % (j) 
 			averages[i].append(kMeans.calculateSC(kMeans.cluster(i,50)))
 		averages[i] = np.mean(averages[i])
 		#print averages[i]
 	plt.plot(averages.keys(),averages.values())
+	plt.show(block=False)
 
 #Use full dataset
+print "Experiment 1"
 one = MyKmeans()
 one.readData('digits-embedding.csv')
 one.plotData()
 expriment(one)
 
 #use 2,4,6,7
+print "Experiment 2"
 two = MyKmeans()
 two.readData('digits-embedding.csv',2)
 two.plotData()
 expriment(two)
 
-#use 6,7
+#use 6,
+print "Experiment 3"
 three = MyKmeans()
 three.readData('digits-embedding.csv',3)
 three.plotData()
