@@ -25,8 +25,18 @@ class MyKmeans:
 	clusterIndex=[]
 	points=[]
 	k=0
-	def readData(self,filename):
+	def readData(self,filename,exper=0):
 		self.data = pd.read_csv(filename,header=None)
+		if exper==2:
+			for i in range(10):
+				if(i != 2 and i!=4 and i != 6 and i!= 7):
+					self.data = self.data[self.data[1]!=i]
+					print self.data
+		elif exper==3:
+			for i in range(10):
+				if(i != 6 and i!= 7):
+					self.data = self.data[self.data[1]!=i]
+					print self.data
 		self.points=np.array(list(zip(self.data[2].values,self.data[3].values)))
 
 
@@ -93,7 +103,7 @@ class MyKmeans:
 			B = min([self.avgDistance(i,j,clusters) for j in range(self.k) if j != clusterId])
 			sc = sc + ((B-A)/max(A,B))
 		sc = sc/len(self.data)
-		print sc
+		return sc
 
 	#plots raw data before processing
 	def plotData(self):
@@ -141,15 +151,31 @@ kValues=[2,4,8,16,32]
 def expriment(kMeans):
 	averages={}
 	for i in kValues:
-		averages[i]=[]
-		print i
+		averages[i]=0
+		#print i
 		for j in range(10):
-			print "trial %d" % (j)
+			#print "trial %d" 
 			averages[i].append(kMeans.calculateSC(kMeans.cluster(i,50)))
 		averages[i] = np.mean(averages[i])
-		print averages[i]
+		#print averages[i]
+	plt.plot(averages.keys(),averages.values())
 
 #Use full dataset
 one = MyKmeans()
 one.readData('digits-embedding.csv')
+one.plotData()
 expriment(one)
+
+#use 2,4,6,7
+two = MyKmeans()
+two.readData('digits-embedding.csv',2)
+two.plotData()
+expriment(two)
+
+#use 6,7
+three = MyKmeans()
+three.readData('digits-embedding.csv',3)
+three.plotData()
+expriment(three)
+
+
